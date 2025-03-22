@@ -1,5 +1,3 @@
-/* App.css */
-
 /* Reset some default styling */
 * {
   margin: 0;
@@ -28,6 +26,18 @@ body {
 .header h1 {
   font-size: 2rem;
   color: #7f4f24; /* Deep warm brown */
+}
+
+/* Error message styling */
+.error-message {
+  max-width: 600px;
+  margin: 0 auto 20px auto;
+  color: #b03a2e;  /* A warm red/brown shade */
+  background-color: #f9d3cd; /* Pale red background */
+  padding: 10px;
+  border-radius: 4px;
+  text-align: center;
+  font-weight: bold;
 }
 
 /* Form container for adding contacts */
@@ -71,11 +81,11 @@ body {
 .search-container {
   max-width: 600px;
   margin: 0 auto 30px auto;
-  display: flex;
-  flex-direction: column;
+  text-align: center;
 }
 
 .search-container input {
+  width: 100%;
   padding: 12px;
   border-radius: 4px;
   border: 1px solid #ccc;
@@ -88,6 +98,7 @@ body {
 .contact-list {
   max-width: 600px;
   margin: 0 auto;
+  text-align: center; /* Center the heading & the UL */
 }
 
 .contact-list h2 {
@@ -98,6 +109,7 @@ body {
 .contact-list ul {
   list-style: none;
   padding: 0;
+  text-align: left; /* So each li text is left-aligned while container is centered */
 }
 
 /* Individual contact item */
@@ -109,4 +121,32 @@ body {
   border-radius: 4px;
   border-left: 6px solid #b07d62;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  word-wrap: break-word; /* Wrap long text */
+}
+
+/* Contact name on a separate line */
+.contact-name {
+  font-weight: bold;
+  margin-bottom: 4px;
+}
+
+/* Contact email on a separate line */
+.contact-email {
+  margin-bottom: 8px;
+  word-wrap: break-word; /* For long emails */
+}
+
+/* Delete button */
+.delete-button {
+  display: inline-block;
+  padding: 8px 12px;
+  background-color: #b03a2e; /* A warm red/brown shade */
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.delete-button:hover {
+  background-color: #943027;
 }

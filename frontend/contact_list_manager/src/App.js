@@ -7,6 +7,7 @@ function App() {
   const [email, setEmail] = useState('');
   const [contacts, setContacts] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
+  const [error, setError] = useState(''); // To display error messages in the UI
 
   // Fetch contacts when searchQuery changes or on initial load
   useEffect(() => {
@@ -21,25 +22,68 @@ function App() {
       setContacts(response.data);
     } catch (error) {
       console.error(error);
+      setError('Failed to fetch contacts. Please try again later.');
     }
+  };
+
+  // Validate email format (basic regex)
+  const isValidEmail = (emailToTest) => {
+    // Very simple pattern; adjust for more robust validation if desired
+    return /^\S+@\S+\.\S+$/.test(emailToTest);
   };
 
   // POST request to add a new contact
   const addContact = async (e) => {
     e.preventDefault();
-    if (!name || !email) {
-      alert('Name and Email are required!');
+    setError(''); // Clear any previous error message
+
+    // Check for empty fields
+    if (!name.trim() || !email.trim()) {
+      setError('Name and Email are required.');
       return;
     }
+
+    // Check email validity
+    if (!isValidEmail(email)) {
+      setError('Please enter a valid email address.');
+      return;
+    }
+
     try {
       await axios.post('http://localhost:3001/api/contacts', { name, email });
       setName('');
       setEmail('');
       // Refresh the list (without search filter)
       fetchContacts('');
-      setSearchQuery(''); // Also reset the search bar if desired
-    } catch (error) {
-      console.error(error.response ? error.response.data : error.message);
+      setSearchQuery('');
+    } catch (err) {
+      console.error(err);
+      if (err.response && err.response.data && err.response.data.message) {
+        setError(err.response.data.message);
+      } else {
+        setError('An unexpected error occurred while adding the contact.');
+      }
+    }
+  };
+
+  // DELETE request to remove a contact by email
+  const deleteContact = async (contactEmail) => {
+    // Show a confirmation dialog first
+    const confirmed = window.confirm('Are you sure you want to delete this contact?');
+    if (!confirmed) return; // If user cancels, do nothing
+
+    setError(''); // Clear any previous error message
+    try {
+      await axios.delete(`http://localhost:3001/api/contacts/${contactEmail}`);
+      // Refresh the contact list
+      fetchContacts(searchQuery);
+    } catch (err) {
+      console.error(err);
+      if (err.response && err.response.data && err.response.data.message) {
+        setError(err.response.data.message);
+      } else {
+        setError('An unexpected error occurred while deleting the contact.');
+      }
     }
   };
 
@@ -49,6 +93,13 @@ function App() {
       <header className="header">
         <h1>Contact Manager</h1>
       </header>
+
+      {/* Error message display */}
+      {error && (
+        <div className="error-message">
+          {error}
+        </div>
+      )}
 
       {/* Form to add a new contact */}
       <div className="form-container">
@@ -69,7 +120,7 @@ function App() {
         </form>
       </div>
 
-      {/* Search container (no search button) */}
+      {/* Search container (no button) */}
       <div className="search-container">
         <input
           type="text"
@@ -85,8 +136,18 @@ function App() {
         <ul>
           {contacts.map((contact, idx) => (
             <li key={idx}>
-              <strong>Name:</strong> {contact.name} &nbsp;|&nbsp; 
-              <strong>Email:</strong> {contact.email}
+              <div className="contact-name">
+                <strong>Name:</strong> {contact.name}
+              </div>
+              <div className="contact-email">
+                <strong>Email:</strong> {contact.email}
+              </div>
+              <button
+                className="delete-button"
+                onClick={() => deleteContact(contact.email)}
+              >
+                Delete
+              </button>
             </li>
           ))}
         </ul>
