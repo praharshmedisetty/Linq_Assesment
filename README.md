@@ -2,6 +2,8 @@
 
 This project is a simple Contact Manager application demonstrating how to create, read, and delete contacts in a lightweight Node.js + React stack. The backend originally used an in-memory array to store contacts but later moved to a minimal embedded NeDB database for data persistence without needing a heavyweight database server.
 
+NOTE: VIDEO FILE PRESENT IN THE REPOSITORY TO SHOWCASE THE WORKING OF THE APP
+
 ---
 
 ## 🛠 Backend Instructions
