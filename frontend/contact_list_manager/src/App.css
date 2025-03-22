@@ -1,4 +1,10 @@
-/* Reset and base styling */
+/* App.css
+ *
+ * Basic styling for the Contact Manager application using a warm
+ * autumn-inspired color palette.
+ */
+
+/* Reset & base styling */
 * {
   margin: 0;
   padding: 0;
@@ -11,7 +17,7 @@ body {
   color: #333;
 }
 
-/* Overall container */
+/* Overall app container */
 .app-container {
   min-height: 100vh;
   padding: 20px;
@@ -28,12 +34,12 @@ body {
   color: #7f4f24; /* Deep warm brown */
 }
 
-/* Error message styling */
+/* Error message display */
 .error-message {
   max-width: 600px;
   margin: 0 auto 20px;
   color: #b03a2e;  /* Warm red/brown */
-  background-color: #f9d3cd; 
+  background-color: #f9d3cd;
   padding: 10px;
   border-radius: 4px;
   text-align: center;

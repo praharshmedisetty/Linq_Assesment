@@ -1,27 +1,38 @@
+/**
+ * App.js
+ *
+ * A simple React application that interacts with the Node.js + NeDB backend.
+ * - Allows adding, displaying, searching, and deleting contacts.
+ * - Uses Axios for HTTP requests.
+ */
+
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import './App.css';
 
 function App() {
-  // Form inputs
+  /**
+   * State Variables
+   */
   const [contactName, setContactName] = useState('');
   const [contactEmail, setContactEmail] = useState('');
-
-  // Contact list & search
   const [contacts, setContacts] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
-
-  // Error message to display to the user
   const [errorMessage, setErrorMessage] = useState('');
 
-  // Load contacts whenever the search term changes
+  /**
+   * Load contacts whenever the searchTerm changes.
+   */
   useEffect(() => {
     loadContacts(searchTerm);
   }, [searchTerm]);
 
-  // Fetch contacts from the server, optionally filtered
+  /**
+   * Fetch contacts from the server (with optional query filter).
+   */
   const loadContacts = async (term) => {
     try {
+      // Append '?query=...' if a search term is provided
       const queryParam = term ? `?query=${term}` : '';
       const response = await axios.get(`http://localhost:3001/api/contacts${queryParam}`);
       setContacts(response.data);
@@ -31,15 +42,20 @@ function App() {
     }
   };
 
-  // Basic email validation using a simple regex
+  /**
+   * Basic email validation with a simple regex.
+   * Adjust as needed for more robust validation.
+   */
   const isEmailValid = (email) => {
     return /^\S+@\S+\.\S+$/.test(email);
   };
 
-  // Handle "Add Contact" form submission
+  /**
+   * Handle adding a new contact (form submission).
+   */
   const handleAddContact = async (event) => {
     event.preventDefault();
-    setErrorMessage(''); // Reset any previous error
+    setErrorMessage(''); // Clear any previous error
 
     // Check for empty fields
     if (!contactName.trim() || !contactEmail.trim()) {
@@ -47,23 +63,25 @@ function App() {
       return;
     }
 
-    // Check email validity
+    // Validate email format
     if (!isEmailValid(contactEmail)) {
       setErrorMessage('Please enter a valid email address.');
       return;
     }
 
-    // Attempt to add contact
+    // Attempt to add the contact
     try {
       await axios.post('http://localhost:3001/api/contacts', {
         name: contactName,
         email: contactEmail,
       });
+
+      // Clear form inputs
       setContactName('');
       setContactEmail('');
-      // Refresh the list (clears the search and reloads everything)
-      loadContacts('');
+      // Reset search & refresh the contact list
       setSearchTerm('');
+      loadContacts('');
     } catch (err) {
       console.error('Error adding contact:', err);
       if (err.response && err.response.data && err.response.data.message) {
@@ -74,14 +92,18 @@ function App() {
     }
   };
 
-  // Handle deleting a contact by email
+  /**
+   * Handle deleting a contact by email.
+   */
   const handleDeleteContact = async (email) => {
+    // Confirmation dialog before deletion
     const confirmed = window.confirm('Are you sure you want to delete this contact?');
     if (!confirmed) return;
 
     setErrorMessage('');
     try {
       await axios.delete(`http://localhost:3001/api/contacts/${email}`);
+      // Refresh the contact list with the current searchTerm
       loadContacts(searchTerm);
     } catch (err) {
       console.error('Error deleting contact:', err);
