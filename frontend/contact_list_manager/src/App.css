@@ -1,4 +1,4 @@
-/* Reset some default styling */
+/* Reset and base styling */
 * {
   margin: 0;
   padding: 0;
@@ -7,17 +7,17 @@
 
 body {
   font-family: Arial, sans-serif;
-  background-color: #f2ede3; /* Subtle off-white with a warm hint */
-  color: #333;               /* Dark grey text for good contrast */
+  background-color: #f2ede3; /* Warm off-white */
+  color: #333;
 }
 
-/* Container for the whole app */
+/* Overall container */
 .app-container {
   min-height: 100vh;
   padding: 20px;
 }
 
-/* Header styling */
+/* Header */
 .header {
   text-align: center;
   margin-bottom: 30px;
@@ -31,9 +31,9 @@ body {
 /* Error message styling */
 .error-message {
   max-width: 600px;
-  margin: 0 auto 20px auto;
-  color: #b03a2e;  /* A warm red/brown shade */
-  background-color: #f9d3cd; /* Pale red background */
+  margin: 0 auto 20px;
+  color: #b03a2e;  /* Warm red/brown */
+  background-color: #f9d3cd; 
   padding: 10px;
   border-radius: 4px;
   text-align: center;
@@ -43,8 +43,8 @@ body {
 /* Form container for adding contacts */
 .form-container {
   max-width: 600px;
-  margin: 0 auto 30px auto;
-  background-color: #faeee0; /* Lighter warm shade */
+  margin: 0 auto 30px;
+  background-color: #faeee0;
   border-radius: 5px;
   padding: 20px;
   box-shadow: 0 3px 6px rgba(0,0,0,0.1);
@@ -58,14 +58,14 @@ body {
   border-radius: 4px;
   border: 1px solid #ccc;
   font-size: 1rem;
-  color: #333;
   background-color: #fff;
+  color: #333;
 }
 
 .form-container button {
   width: 100%;
   padding: 12px;
-  background-color: #b07d62; /* Soft autumn brown/orange */
+  background-color: #b07d62;
   color: #fff;
   border: none;
   border-radius: 4px;
@@ -74,13 +74,13 @@ body {
 }
 
 .form-container button:hover {
-  background-color: #9c6644; /* Slightly darker hue */
+  background-color: #9c6644;
 }
 
-/* Container for search input */
+/* Search container */
 .search-container {
   max-width: 600px;
-  margin: 0 auto 30px auto;
+  margin: 0 auto 30px;
   text-align: center;
 }
 
@@ -94,11 +94,11 @@ body {
   color: #333;
 }
 
-/* Contact list container */
+/* Contact list */
 .contact-list {
   max-width: 600px;
   margin: 0 auto;
-  text-align: center; /* Center the heading & the UL */
+  text-align: center;
 }
 
 .contact-list h2 {
@@ -109,38 +109,34 @@ body {
 .contact-list ul {
   list-style: none;
   padding: 0;
-  text-align: left; /* So each li text is left-aligned while container is centered */
+  text-align: left;
 }
 
-/* Individual contact item */
 .contact-list li {
   background-color: #fff;
-  color: #333;
   margin-bottom: 10px;
   padding: 12px;
   border-radius: 4px;
   border-left: 6px solid #b07d62;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-  word-wrap: break-word; /* Wrap long text */
+  word-wrap: break-word;
 }
 
-/* Contact name on a separate line */
 .contact-name {
   font-weight: bold;
   margin-bottom: 4px;
 }
 
-/* Contact email on a separate line */
 .contact-email {
   margin-bottom: 8px;
-  word-wrap: break-word; /* For long emails */
+  word-wrap: break-word;
 }
 
 /* Delete button */
 .delete-button {
   display: inline-block;
   padding: 8px 12px;
-  background-color: #b03a2e; /* A warm red/brown shade */
+  background-color: #b03a2e;
   color: #fff;
   border: none;
   border-radius: 4px;

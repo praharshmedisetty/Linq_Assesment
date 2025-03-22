@@ -3,139 +3,140 @@ import axios from 'axios';
 import './App.css';
 
 function App() {
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
+  // Form inputs
+  const [contactName, setContactName] = useState('');
+  const [contactEmail, setContactEmail] = useState('');
+
+  // Contact list & search
   const [contacts, setContacts] = useState([]);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [error, setError] = useState(''); // To display error messages in the UI
+  const [searchTerm, setSearchTerm] = useState('');
 
-  // Fetch contacts when searchQuery changes or on initial load
+  // Error message to display to the user
+  const [errorMessage, setErrorMessage] = useState('');
+
+  // Load contacts whenever the search term changes
   useEffect(() => {
-    fetchContacts(searchQuery);
-  }, [searchQuery]);
+    loadContacts(searchTerm);
+  }, [searchTerm]);
 
-  // GET request to fetch contacts (with optional query)
-  const fetchContacts = async (query) => {
+  // Fetch contacts from the server, optionally filtered
+  const loadContacts = async (term) => {
     try {
-      const queryParam = query ? `?query=${query}` : '';
+      const queryParam = term ? `?query=${term}` : '';
       const response = await axios.get(`http://localhost:3001/api/contacts${queryParam}`);
       setContacts(response.data);
     } catch (error) {
-      console.error(error);
-      setError('Failed to fetch contacts. Please try again later.');
+      console.error('Error loading contacts:', error);
+      setErrorMessage('Failed to load contacts. Please try again later.');
     }
   };
 
-  // Validate email format (basic regex)
-  const isValidEmail = (emailToTest) => {
-    // Very simple pattern; adjust for more robust validation if desired
-    return /^\S+@\S+\.\S+$/.test(emailToTest);
+  // Basic email validation using a simple regex
+  const isEmailValid = (email) => {
+    return /^\S+@\S+\.\S+$/.test(email);
   };
 
-  // POST request to add a new contact
-  const addContact = async (e) => {
-    e.preventDefault();
-    setError(''); // Clear any previous error message
+  // Handle "Add Contact" form submission
+  const handleAddContact = async (event) => {
+    event.preventDefault();
+    setErrorMessage(''); // Reset any previous error
 
     // Check for empty fields
-    if (!name.trim() || !email.trim()) {
-      setError('Name and Email are required.');
+    if (!contactName.trim() || !contactEmail.trim()) {
+      setErrorMessage('Name and Email are required.');
       return;
     }
 
     // Check email validity
-    if (!isValidEmail(email)) {
-      setError('Please enter a valid email address.');
+    if (!isEmailValid(contactEmail)) {
+      setErrorMessage('Please enter a valid email address.');
       return;
     }
 
+    // Attempt to add contact
     try {
-      await axios.post('http://localhost:3001/api/contacts', { name, email });
-      setName('');
-      setEmail('');
-      // Refresh the list (without search filter)
-      fetchContacts('');
-      setSearchQuery('');
+      await axios.post('http://localhost:3001/api/contacts', {
+        name: contactName,
+        email: contactEmail,
+      });
+      setContactName('');
+      setContactEmail('');
+      // Refresh the list (clears the search and reloads everything)
+      loadContacts('');
+      setSearchTerm('');
     } catch (err) {
-      console.error(err);
+      console.error('Error adding contact:', err);
       if (err.response && err.response.data && err.response.data.message) {
-        setError(err.response.data.message);
+        setErrorMessage(err.response.data.message);
       } else {
-        setError('An unexpected error occurred while adding the contact.');
+        setErrorMessage('An unexpected error occurred while adding the contact.');
       }
     }
   };
 
-  // DELETE request to remove a contact by email
-  const deleteContact = async (contactEmail) => {
-    // Show a confirmation dialog first
+  // Handle deleting a contact by email
+  const handleDeleteContact = async (email) => {
     const confirmed = window.confirm('Are you sure you want to delete this contact?');
-    if (!confirmed) return; // If user cancels, do nothing
+    if (!confirmed) return;
 
-    setError(''); // Clear any previous error message
+    setErrorMessage('');
     try {
-      await axios.delete(`http://localhost:3001/api/contacts/${contactEmail}`);
-      // Refresh the contact list
-      fetchContacts(searchQuery);
+      await axios.delete(`http://localhost:3001/api/contacts/${email}`);
+      loadContacts(searchTerm);
     } catch (err) {
-      console.error(err);
+      console.error('Error deleting contact:', err);
       if (err.response && err.response.data && err.response.data.message) {
-        setError(err.response.data.message);
+        setErrorMessage(err.response.data.message);
       } else {
-        setError('An unexpected error occurred while deleting the contact.');
+        setErrorMessage('An unexpected error occurred while deleting the contact.');
       }
     }
   };
 
   return (
     <div className="app-container">
-      {/* Header */}
       <header className="header">
         <h1>Contact Manager</h1>
       </header>
 
-      {/* Error message display */}
-      {error && (
+      {errorMessage && (
         <div className="error-message">
-          {error}
+          {errorMessage}
         </div>
       )}
 
-      {/* Form to add a new contact */}
       <div className="form-container">
-        <form onSubmit={addContact}>
+        <form onSubmit={handleAddContact}>
           <input
             type="text"
             placeholder="Enter Name"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
+            value={contactName}
+            onChange={(e) => setContactName(e.target.value)}
           />
           <input
             type="email"
             placeholder="Enter Email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            value={contactEmail}
+            onChange={(e) => setContactEmail(e.target.value)}
           />
           <button type="submit">Add Contact</button>
         </form>
       </div>
 
-      {/* Search container (no button) */}
       <div className="search-container">
         <input
           type="text"
           placeholder="Search by Name or Email..."
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
         />
       </div>
 
-      {/* Contact list */}
       <div className="contact-list">
         <h2>Contact List</h2>
         <ul>
-          {contacts.map((contact, idx) => (
-            <li key={idx}>
+          {contacts.map((contact, index) => (
+            <li key={index}>
               <div className="contact-name">
                 <strong>Name:</strong> {contact.name}
               </div>
@@ -144,7 +145,7 @@ function App() {
               </div>
               <button
                 className="delete-button"
-                onClick={() => deleteContact(contact.email)}
+                onClick={() => handleDeleteContact(contact.email)}
               >
                 Delete
               </button>
